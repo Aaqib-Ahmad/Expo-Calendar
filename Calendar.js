@@ -2,8 +2,8 @@ import React, { useEffect,useState } from "react";
 import { StyleSheet, Text, View, Image, Button,FlatList,Modal } from "react-native";
 import * as Font from 'expo-font';
 
-export default function EventCalendar({navigation}) {
- 
+export default function EventCalendar({navigation,route}) {
+    const {AccessToken} = route.params;
     let [modalOpen, setModalOpen] = useState(false);
     let customFonts = {
         'Inter-Black': require('./assets/fonts/Inter-Black.ttf'),
@@ -16,18 +16,45 @@ export default function EventCalendar({navigation}) {
         'Inter-SemiBold': require('./assets/fonts/Inter-SemiBold.ttf'),
         'Inter-Thin': require('./assets/fonts/Inter-Thin.ttf'),
       };
-    
+
+      const[events,setEvents] = useState([]);
+      const[date,setDate] = useState("");
+      const CALENDAR_ID = 'iie91udhph8sgmmgimto0mj8rs@group.calendar.google.com';
+      const API_KEY = 'AIzaSyAp7HYKq-c39Hiu1YR-tdAA1I4-BhjCIlk';
+      let url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}`;
+
+      const handleTime = (data) =>{
+            let date = new Date(data);
+            let hrs = date.getHours()
+            let mins = date.getMinutes()
+            if(hrs<=9)
+                hrs = '0' + hrs
+            if(mins<10)
+                mins = '0' + mins
+            const postTime= hrs + ':' + mins
+            return postTime.toString()
+            
+      }
+      const getEvents = async () => {
+        try{
+          const response = await fetch(url,{
+            method: 'Get',
+            headers: { Authorization: `Bearer ${AccessToken}` },
+            
+          });
+          const data = await response.json();
+          setEvents(data.items);
+          console.log(events);
+        }
+        catch(error){
+          console.log(error);
+        }
+      };
+
       async function loadFontsAsync() {
         await Font.loadAsync(customFonts);
       }
-
-    const data = [{
-        id:1,
-        name:'Talha'
-    },{   id:2,
-        name:'Ahmed'
-    }];
-      
+     
     
     useEffect(()=>{
         loadFontsAsync();
@@ -46,19 +73,21 @@ return(
                 />
                 <Text style={styles.ScheduleHeading}>Schedule</Text>
                 <FlatList
-                    data={data}
-                    keyExtractor={(item)=>item.id}        
-                    renderItem={(item)=>
+                    data={events}
+                    keyExtractor={(item)=>item.id}   
+                    contentContainerStyle={{ paddingBottom: 100 }}     
+                    renderItem={({item})=>
                         <View>
                             
                             <View>
-                                <Text style={styles.ScheduleTime}>08:00</Text>
-                                <View style={{borderRadius:15,textAlign: 'left',flex: 1,backgroundColor:"#E1F8FF",flexDirection:"column",paddingTop:10,paddingBottom:50,marginLeft:50,marginRight:30}}>
+                                <Text style={styles.ScheduleTime}>{handleTime(item.start.dateTime) }</Text>
+                                <View style={{borderRadius:15,textAlign: 'left',flex: 1,backgroundColor:"#E1F8FF",flexDirection:"column",paddingTop:20,paddingBottom:20,marginLeft:50,marginRight:30}}>
                                     
-                                    <Text style={styles.EventHeading}>Hello</Text> 
-                                    <Text style={styles.EventDuration}>1.5 hours</Text>
+                                    <Text style={styles.EventHeading}>{item.summary}</Text> 
+                                    <Text style={styles.EventDuration}>{item.eventType}</Text>
+                                    <Text style={styles.EventDuration}>{item.creator.email}</Text>
                                 </View>
-                                <Text style={styles.ScheduleTime}>09:00</Text>            
+                                <Text style={styles.ScheduleTime}>{handleTime(item.end.dateTime) }</Text>            
                             </View>
                             
                                
@@ -71,7 +100,10 @@ return(
 
         <Button
             title="Open Modal"
-            onPress={()=>setModalOpen(true)}
+            onPress={()=>{
+                getEvents();
+                setModalOpen(true);                
+            }}
         />
     </View>
     
@@ -120,6 +152,7 @@ const styles = StyleSheet.create({
     EventDuration:{
         color: "#353C49",
         paddingLeft:20,
+        paddingTop:10,
         fontSize: 12,
         fontWeight: "500",
         fontFamily: 'Inter-Regular',

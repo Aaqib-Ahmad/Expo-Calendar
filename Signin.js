@@ -1,34 +1,13 @@
 import React, { useState,useEffect } from "react";
 import { StyleSheet, Text, View, Image, Button,FlatList } from "react-native";
 import * as Google from "expo-google-app-auth";
-
-import ListItem from "./ListItem";
-
-
 export default function GoogleSignin ({navigation}) {
 
   const [signin,setSignin] = useState(false);
   const [accessToken,setAccessToken] = useState("");
-  const[events,setEvents] = useState([]);
-  const CALENDAR_ID = 'iie91udhph8sgmmgimto0mj8rs@group.calendar.google.com';
-  const API_KEY = 'AIzaSyAp7HYKq-c39Hiu1YR-tdAA1I4-BhjCIlk';
-  let url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}`;
+  
 
-  const getEvents = async () => {
-    try{
-      const response = await fetch(url,{
-        method: 'Get',
-        headers: { Authorization: `Bearer ${accessToken}` },
-        
-      });
-      const data = await response.json();
-      setEvents(data.items);
-      console.log(events);
-    }
-    catch(error){
-      console.log(error);
-    }
-  };
+  
 
   const signIn = async () => {
     try {
@@ -36,7 +15,7 @@ export default function GoogleSignin ({navigation}) {
         androidClientId:
           "874734806710-odmpk8u9tgr0qt2cm07rc91fm17hdfrm.apps.googleusercontent.com",
         scopes: ["https://www.googleapis.com/auth/calendar.events","https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/userinfo.email" ],
+        "https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/calendar.settings.readonly" ],
         redirectUrl:"host.exp.exponent:/oauth2redirect/google"
       });
 
@@ -58,7 +37,7 @@ export default function GoogleSignin ({navigation}) {
       <View style={styles.container}>
       {signin ? (
         
-        navigation.navigate("Calendar",{AccessToken:{accessToken}})
+        navigation.navigate("Calendar",{AccessToken:accessToken})
       
       ) : (
         <View>
