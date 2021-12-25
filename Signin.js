@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { StyleSheet, Text, View, Image, Button,FlatList } from "react-native";
 import * as Google from "expo-google-app-auth";
+
 import ListItem from "./ListItem";
 
 
@@ -57,23 +58,8 @@ export default function GoogleSignin ({navigation}) {
       <View style={styles.container}>
       {signin ? (
         
-        <View style={styles.container}>
-          <Button title="Get Events" onPress={() => getEvents()} />
-          <FlatList
-            data = {events}
-            keyExtractor={(item)=>item.id}
-            renderItem={({ item }) => (
-              <ListItem
-                name = {item.summary}
-                StartTime={item.created}
-                EndTime={item.end.dateTime}
-              />
-            )}
-            
-          />
-          
-          <Text>signed in</Text> 
-      </View>
+        navigation.navigate("Calendar",{AccessToken:{accessToken}})
+      
       ) : (
         <View>
          <Text style={styles.header}>Sign In With Google</Text>

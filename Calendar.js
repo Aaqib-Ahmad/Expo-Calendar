@@ -2,7 +2,7 @@ import React, { useEffect,useState } from "react";
 import { StyleSheet, Text, View, Image, Button,FlatList,Modal } from "react-native";
 import * as Font from 'expo-font';
 
-export default function EventCalendar() {
+export default function EventCalendar({navigation}) {
  
     let [modalOpen, setModalOpen] = useState(false);
     let customFonts = {
