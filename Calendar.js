@@ -6,19 +6,13 @@ export default function EventCalendar({navigation,route}) {
     const {AccessToken} = route.params;
     let [modalOpen, setModalOpen] = useState(false);
     let customFonts = {
-        'Inter-Black': require('./assets/fonts/Inter-Black.ttf'),
-        'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
-        'Inter-ExtraBold': require('./assets/fonts/Inter-ExtraBold.ttf'),
-        'Inter-ExtraLight': require('./assets/fonts/Inter-ExtraLight.ttf'),
         'Inter-Light': require('./assets/fonts/Inter-Light.ttf'),
         'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
         'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
         'Inter-SemiBold': require('./assets/fonts/Inter-SemiBold.ttf'),
-        'Inter-Thin': require('./assets/fonts/Inter-Thin.ttf'),
       };
 
       const[events,setEvents] = useState([]);
-      const[date,setDate] = useState("");
       const CALENDAR_ID = 'iie91udhph8sgmmgimto0mj8rs@group.calendar.google.com';
       const API_KEY = 'AIzaSyAp7HYKq-c39Hiu1YR-tdAA1I4-BhjCIlk';
       let url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}`;
@@ -67,7 +61,8 @@ return(
         >
             <View >
                 <Button
-                    title="Close"
+                    
+                    title="X"
                     onPress={()=>setModalOpen(false)}
 
                 />
@@ -99,11 +94,18 @@ return(
         </Modal>
 
         <Button
-            title="Open Modal"
+            title="Show Events"
             onPress={()=>{
                 getEvents();
                 setModalOpen(true);                
             }}
+        />
+
+        <Button
+              title="Create Events"
+              onPress={()=>{
+                navigation.navigate("CreateEvent",{AccessToken:AccessToken});            
+              }}
         />
     </View>
     

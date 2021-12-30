@@ -34,18 +34,18 @@ export default function GoogleSignin ({navigation}) {
   
     return (
      
-      <View style={styles.container}>
-      {signin ? (
+      <View style={styles.container}> 
+        {signin ? (
+          
+          navigation.navigate("Calendar",{AccessToken:accessToken})
         
-        navigation.navigate("Calendar",{AccessToken:accessToken})
-      
-      ) : (
-        <View>
-         <Text style={styles.header}>Sign In With Google</Text>
-         <Button title="Sign in with Google" onPress={() => signIn()} />
-         
-       </View>
-      )}
+        ) : (
+          <View style={{flex:1}}>
+            <Text style={styles.header}>Welcome to Calendar App</Text>
+            <Button title="Sign in with Google" onPress={() => signIn()} />
+            
+          </View>
+        )}
     </View>      
      
     );
@@ -59,14 +59,10 @@ export default function GoogleSignin ({navigation}) {
     justifyContent: "center",
   },
   header: {
-    fontSize: 25,
+    marginTop:50,
+    marginBottom:150,
+    fontSize: 24,
+        
   },
-  image: {
-    marginTop: 15,
-    width: 150,
-    height: 150,
-    borderColor: "rgba(0,0,0,0.2)",
-    borderWidth: 3,
-    borderRadius: 150,
-  },
+  
 });
