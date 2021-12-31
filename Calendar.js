@@ -1,9 +1,15 @@
 import React, { useEffect,useState } from "react";
 import { StyleSheet, Text, View, Image, Button,FlatList,Modal } from "react-native";
 import * as Font from 'expo-font';
+import * as Config from "./config.js";
 
 export default function EventCalendar({navigation,route}) {
     const {AccessToken} = route.params;
+    const [events,setEvents] = useState([]);
+    const [startDate,setStartDate] = useState(new Date());
+    const [endDate,setEndDate] = useState(new Date());
+
+
     let [modalOpen, setModalOpen] = useState(false);
     let customFonts = {
         'Inter-Light': require('./assets/fonts/Inter-Light.ttf'),
@@ -11,11 +17,7 @@ export default function EventCalendar({navigation,route}) {
         'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
         'Inter-SemiBold': require('./assets/fonts/Inter-SemiBold.ttf'),
       };
-
-      const[events,setEvents] = useState([]);
-      const CALENDAR_ID = 'iie91udhph8sgmmgimto0mj8rs@group.calendar.google.com';
-      const API_KEY = 'AIzaSyAp7HYKq-c39Hiu1YR-tdAA1I4-BhjCIlk';
-      let url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}`;
+      let url = Config.URL;
 
       const handleTime = (data) =>{
             let date = new Date(data);
@@ -38,6 +40,8 @@ export default function EventCalendar({navigation,route}) {
           });
           const data = await response.json();
           setEvents(data.items);
+          setStartDate(data.item.start.dateTime);
+          setEndDate(data.item.end.dateTime);
           console.log(events);
         }
         catch(error){
@@ -79,10 +83,23 @@ return(
                                 <View style={{borderRadius:15,textAlign: 'left',flex: 1,backgroundColor:"#E1F8FF",flexDirection:"column",paddingTop:20,paddingBottom:20,marginLeft:50,marginRight:30}}>
                                     
                                     <Text style={styles.EventHeading}>{item.summary}</Text> 
-                                    <Text style={styles.EventDuration}>{item.eventType}</Text>
-                                    <Text style={styles.EventDuration}>{item.creator.email}</Text>
+                                    <Text style={styles.EventDuration}>{item.description}</Text>
+                                    <Text style={styles.EventDuration}>{"Start: "+ startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()}</Text>
+                                    
+                                    <Text style={styles.EventDuration}>{"End: "+endDate.getDate()+"/"+(endDate.getMonth()+1)+"/"+endDate.getFullYear()}</Text>
+                                    
                                 </View>
-                                <Text style={styles.ScheduleTime}>{handleTime(item.end.dateTime) }</Text>            
+                                <Text style={styles.ScheduleTime}>{handleTime(item.end.dateTime) }</Text>  
+                                <View
+                                  style={{
+                                    borderBottomColor: "#1665FA",
+                                    borderBottomWidth: 0.5,
+                                    paddingBottom:10,
+                                    marginRight:20,
+                                    marginLeft:20,
+                                    marginBottom:10
+                                  }}
+                                />          
                             </View>
                             
                                
@@ -104,7 +121,7 @@ return(
         <Button
               title="Create Events"
               onPress={()=>{
-                navigation.navigate("CreateEvent",{AccessToken:AccessToken});            
+                navigation.navigate("CreateEvent",{Accesstoken:AccessToken});            
               }}
         />
     </View>

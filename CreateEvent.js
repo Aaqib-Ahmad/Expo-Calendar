@@ -5,9 +5,11 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import * as Config from "./config.js"
+import moment from 'moment';
 
 export default function CreateEvent ({navigation,route}){
-  const {AccessToken} = route.params;
+  const {Accesstoken} = route.params;
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [startMode, setStartMode] = useState('date');
@@ -18,10 +20,7 @@ export default function CreateEvent ({navigation,route}){
   const [category,setCategory] = useState("");
   const [index,setIndex ] = useState(0);
 
-  const CALENDAR_ID = 'iie91udhph8sgmmgimto0mj8rs@group.calendar.google.com';
-  const API_KEY = 'AIzaSyAp7HYKq-c39Hiu1YR-tdAA1I4-BhjCIlk';
-  let url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}`;
-
+  
   let customFonts = {
     'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
     'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
@@ -67,28 +66,27 @@ export default function CreateEvent ({navigation,route}){
     endShowMode('time');
   };
 
-const postEvent = async () => {
-  console.log("pressed");
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${AccessToken}`,
-    'Accept':'application/json',
-    'Content-Type':'application/json'
-  },
-    body: JSON.stringify([{
-      summary: title,
-      start: {
-        dateTime: startDate,
+const postEvent =  () => {
+  const response =  fetch(Config.URL, {
+    method: 'Post',
+    headers: { Authorization: `Bearer ${Accesstoken}`,
+    Accept: 'application/json',
+    'Content-Type': 'application/json' },  
+  
+    body:JSON.stringify({
+      "end": {
+        "dateTime": moment(endDate)
       },
-      end: {
-        dateTime: endDate,
+      "start": {
+        "dateTime": moment(startDate)
       },
-      reminders: {
-        useDefault: true,
-      },
-      eventType: category
-      }])
-  });
+      "summary": title,
+      "description": "Category: "+category
+    },)
+  }).then(()=>{
+    navigation.goBack();
+  })
+  .catch((err)=>console.log(err));
  
 };
 
@@ -139,7 +137,7 @@ const postEvent = async () => {
                 <TextInput
                     style = {styles.dateInput}
                     editable = {false}
-                    value={startDate.getDate()+"/"+startDate.getMonth()+"/"+startDate.getFullYear()}
+                    value={startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()}
             />            
           </View>
         </TouchableOpacity>
@@ -187,7 +185,7 @@ const postEvent = async () => {
                 <TextInput
                     style = {styles.dateInput}
                     editable = {false}
-                    value={endDate.getDate()+"/"+endDate.getMonth()+"/"+endDate.getFullYear()}
+                    value={endDate.getDate()+"/"+(endDate.getMonth()+1)+"/"+endDate.getFullYear()}
             />            
           </View>
         </TouchableOpacity>
