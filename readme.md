@@ -1,7 +1,7 @@
 
 # Google developers console setup
 
-1)Open Google Developer's console (https://console.developers.google.com/) <br/>
+Markup: *Open Google Developer's console (https://console.developers.google.com/) <br/>
 4)Create a new project <br/>
 [Screenshot (41)_LI](https://user-images.githubusercontent.com/82023206/147849291-362031f2-badc-4b9e-81d9-b535bdd54d7e.jpg) <br/>
 ![Screenshot (42)](https://user-images.githubusercontent.com/82023206/147849306-d889a321-38b8-4b57-a6bd-02f865e68e25.png) <br/>
